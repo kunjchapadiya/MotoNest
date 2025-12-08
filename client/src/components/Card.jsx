@@ -6,7 +6,7 @@ const Card = ({ car }) => {
     const navigate = useNavigate();
 
     const handleWhatsAppEnquiry = (car) => {
-        const phoneNumber = "916352023799";
+        const phoneNumber = /* your mobile no here */ 
         const message = `Hello, I want to enquire about ${car.brand} ${car.model} priced at ₹${car.price}.`;
         const text = encodeURIComponent(message);
         const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
