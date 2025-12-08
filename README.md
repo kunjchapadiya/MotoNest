@@ -1,5 +1,5 @@
 
-# MotoNest - Car Resellig Web Application
+# MotoNest - Car Reselling Web Application
 
 MotoNest is a full-stack MERN application designed for luxury car reselling. It features a responsive UI, advanced filtering, admin dashboard, enquiry management, and secure backend APIs.
 
