@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Payment = require("../models/Payment");
+const Car = require("../models/car");
 const { verifyToken, isAdmin } = require("../middlewares/authMiddleware");
 const { v4: uuidv4 } = require("uuid"); // You might need to install uuid or just use a random string function
 
@@ -16,6 +17,10 @@ const razorpay = new Razorpay({
 // 1. Create Order
 router.post("/create-order", verifyToken, async (req, res) => {
   const { amount, carId } = req.body;
+
+  if (req.user.role === "admin") {
+    return res.status(403).json({ message: "Admins cannot purchase cars." });
+  }
 
   if (!amount || !carId) {
     return res.status(400).json({ message: "Amount and Car ID are required" });
@@ -52,6 +57,10 @@ router.post("/verify-payment", verifyToken, async (req, res) => {
     amount,
   } = req.body;
 
+  if (req.user.role === "admin") {
+    return res.status(403).json({ message: "Admins cannot purchase cars." });
+  }
+
   try {
     // Verify Signature
     const body = razorpay_order_id + "|" + razorpay_payment_id;
@@ -73,6 +82,7 @@ router.post("/verify-payment", verifyToken, async (req, res) => {
       });
 
       await newPayment.save();
+      await Car.findByIdAndUpdate(carId, { status: "sold" });
 
       res.status(200).json({
         success: true,

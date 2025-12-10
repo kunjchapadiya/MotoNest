@@ -16,7 +16,7 @@ const Profile = require("./routes/Profile");
 const Dashboard = require("./routes/Dashboard");
 const PaymentDetails = require("./routes/PaymentDetails");
 const MyOrders = require("./routes/MyOrders");
-
+const Search = require("./routes/Search");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
@@ -50,6 +50,9 @@ app.use("/api/dashboard", Dashboard);
 app.use("/api/payment", require("./routes/PaymentDetails"));
 app.use("/api/order", require("./routes/MyOrders"));
 app.use("/api/mail", require("./routes/mail"));
+app.use("/api/search", Search);
+app.use("/api/admin/", require("./routes/AddBrand"));
+app.use("/api/contact", require("./routes/Contact"));
 
 app.listen(port, "0.0.0.0", () => {
   console.log(`✅ Server is running on port ${port}`);

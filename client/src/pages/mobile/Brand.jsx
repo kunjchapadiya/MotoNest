@@ -1,20 +1,27 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 const Brand = () => {
 
-    const brands = [
-        { name: "Audi", img: "/images/logos/audi.png", link: "/brand/audi" },
-        { name: "Bentley", img: "/images/logos/bentley.png", link: "/brand/bentley" },
-        { name: "BMW", img: "/images/logos/bmw.png", link: "/brand/bmw" },
-        { name: "Ferrari", img: "/images/logos/ferrari.png", link: "/brand/ferrari" },
-        { name: "Lamborghini", img: "/images/logos/lamborghini.png", link: "/brand/lamborghini" },
-        { name: "Land Rover", img: "/images/logos/lr.png", link: "/brand/land-rover" },
-        { name: "Mercedes-Benz", img: "/images/logos/mercedes.png", link: "/brand/mercedes" },
-        { name: "Porsche", img: "/images/logos/porsche.png", link: "/brand/porsche" },
-        { name: "Rolls-Royce", img: "/images/logos/rolls-royce.png", link: "/brand/rolls-royce" },
-        { name: "Volvo", img: "/images/logos/volvo.png", link: "/brand/volvo" },
-    ];
+    const [brands, setBrands] = useState([]);
+
+    useEffect(() => {
+        const fetchBrands = async () => {
+            try {
+                const response = await axios.get("http://localhost:8080/api/admin/getbrand");
+                const formattedBrands = response.data.map((brand) => ({
+                    name: brand.name,
+                    img: `http://localhost:8080/uploads/${brand.image[0]}`, // Assuming first image is the logo
+                    link: `/brand/${brand.name.toLowerCase().replace(/\s+/g, '-')}`
+                }));
+                setBrands(formattedBrands);
+            } catch (error) {
+                console.error("Error fetching brands:", error);
+            }
+        };
+        fetchBrands();
+    }, []);
 
     return (
         <div className="w-full px-4 py-6">

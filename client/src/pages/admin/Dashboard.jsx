@@ -1,8 +1,10 @@
-import { React, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar";
 import { User, Car, Info } from "lucide-react";
 import axios from "axios";
-const App = () => {
+import LoginPopup from "../../components/LoginPopup";
+
+const Dashboard = () => {
 
     const [totalUser, setTotalUser] = useState(0);
     const [totalCar, setTotalCar] = useState(0);
@@ -10,33 +12,44 @@ const App = () => {
     const [recentCar, setRecentCar] = useState([]);
     const [recentEnquiry, setRecentEnquiry] = useState([]);
 
-    useEffect(() => {
+    const [showLoginPopup, setShowLoginPopup] = useState(false);
+
+    const fetchData = async () => {
         try {
+            const users = await axios.get("http://localhost:8080/api/dashboard/totaluser", { withCredentials: true });
+            setTotalUser(users.data.totalUser);
 
-            const fetchData = async () => {
+            const cars = await axios.get("http://localhost:8080/api/dashboard/totalcar", { withCredentials: true });
+            setTotalCar(cars.data.totalCar);
 
-                const users = await axios.get("http://localhost:8080/api/dashboard/totaluser", { withCredentials: true });
-                setTotalUser(users.data.totalUser);
+            const enquiries = await axios.get("http://localhost:8080/api/dashboard/pendingquery", { withCredentials: true });
+            setTotalEnquiry(enquiries.data.totalEnquiry);
 
-                const cars = await axios.get("http://localhost:8080/api/dashboard/totalcar", { withCredentials: true });
-                setTotalCar(cars.data.totalCar);
+            const recentCar = await axios.get("http://localhost:8080/api/dashboard/recentcar", { withCredentials: true });
+            setRecentCar(recentCar.data.recentCar);
 
-                const enquiries = await axios.get("http://localhost:8080/api/dashboard/pendingquery", { withCredentials: true });
-                setTotalEnquiry(enquiries.data.totalEnquiry);
-
-                const recentCar = await axios.get("http://localhost:8080/api/dashboard/recentcar", { withCredentials: true });
-                setRecentCar(recentCar.data.recentCar);
-
-                const recentEnquiry = await axios.get("http://localhost:8080/api/dashboard/recentenquiry", { withCredentials: true });
-                setRecentEnquiry(recentEnquiry.data.recentEnquiry);
-            }
-            fetchData();
+            const recentEnquiry = await axios.get("http://localhost:8080/api/dashboard/recentenquiry", { withCredentials: true });
+            setRecentEnquiry(recentEnquiry.data.recentEnquiry);
         } catch (error) {
             console.log(error);
+            if (error.response?.status === 401 || error.response?.status === 403) {
+                setShowLoginPopup(true);
+            }
         }
-    })
+    };
+
+    useEffect(() => {
+        const role = localStorage.getItem("role");
+        if (role !== "admin") {
+            setShowLoginPopup(true);
+            return;
+        }
+
+        fetchData();
+    }, []);
+
     return (
-        <div className="flex">
+        <div className="flex relative">
             <Sidebar />
 
             <div className="ml-0 md:ml-64 p-6 w-full bg-gray-100 min-h-screen">
@@ -160,12 +173,19 @@ const App = () => {
                     </table>
                 </div>
 
-
-
             </div>
+
+            {showLoginPopup && (
+                <LoginPopup
+                    onSuccess={() => {
+                        setShowLoginPopup(false);
+                        fetchData();
+                    }}
+                />
+            )}
         </div>
 
     );
 };
 
-export default App;
+export default Dashboard;

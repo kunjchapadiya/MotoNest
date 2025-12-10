@@ -87,7 +87,6 @@ const ManageUser = () => {
                         <tr>
                             <th className="border p-3 text-left">Name</th>
                             <th className="border p-3 text-left">Email</th>
-                            <th className="border p-3 text-left">Role</th>
                             <th className="border p-3 text-center">Actions</th>
                         </tr>
                     </thead>
@@ -97,7 +96,6 @@ const ManageUser = () => {
                             <tr key={user._id} className="hover:bg-gray-50 transition">
                                 <td className="border p-3">{user.name}</td>
                                 <td className="border p-3">{user.email}</td>
-                                <td className="border p-3 capital">{user.role}</td>
 
                                 <td className="border p-3 flex gap-4 justify-center">
                                     <button
@@ -150,21 +148,6 @@ const ManageUser = () => {
                                         setEditForm({ ...editForm, email: e.target.value })
                                     }
                                 />
-                            </div>
-
-                            {/* Role */}
-                            <div className="mb-4">
-                                <label className="font-medium">Role</label>
-                                <select
-                                    className="w-full p-2 border rounded-md mt-1"
-                                    value={editForm.role}
-                                    onChange={(e) =>
-                                        setEditForm({ ...editForm, role: e.target.value })
-                                    }
-                                >
-                                    <option value="user">User</option>
-                                    <option value="admin">Admin</option>
-                                </select>
                             </div>
 
                             {/* Buttons */}

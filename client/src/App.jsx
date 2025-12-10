@@ -22,13 +22,15 @@ import AddCar from './components/forms/AddCar'
 import CarDetail from './components/CarDetail'
 import PaymentDetail from './pages/admin/PaymentDetail'
 import ManageQuery from './pages/admin/ManageQuery'
-
+import AddBrand from './components/forms/Addbrand'
+import ManageMessage from './pages/admin/ManageMessage'
 //brand pages
 import BrandPage from './pages/BrandwiseCar'
 import Brand from './pages/mobile/Brand' // for mobile screen
 // body categories
 import BodyTypePage from './pages/BodyType'
 import Categories from './pages/mobile/Categories' // for mobile screen
+import ProtectUserRoute from './components/ProtectUserRoute';
 
 const App = () => {
   return (
@@ -43,35 +45,48 @@ const App = () => {
   );
 };
 
+const MobileOnly = ({ children }) => {
+  if (window.innerWidth > 768) {
+    return <h1 className="text-center mt-20">This page is only available on mobile.</h1>;
+  }
+  return children;
+};
+
 const AppContent = () => {
   const location = useLocation();
 
   // pages where navbar & footer should be hidden
-  const hideLayout = ["/signup", "/login", "/admin", "/admin/managecar", "/admin/manageuser", "/admin/addcar", "/admin/paymentdetail", "/admin/managequery"].includes(location.pathname);
-
-  const MobileOnly = ({ children }) => {
-    if (window.innerWidth > 768) {
-      return <h1 className="text-center mt-20">This page is only available on mobile.</h1>;
-    }
-    return children;
-  };
+  const hideLayout = ["/signup", "/login", "/admin", "/admin/managecar", "/admin/manageuser", "/admin/addcar", "/admin/paymentdetail", "/admin/managequery", "/admin/managebrand", "/admin/managemessage"].includes(location.pathname);
 
   return (
     <>
       {!hideLayout && <Navbar />}
 
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<AboutUs />} />
-        <Route path="/contact" element={<ContactUs />} />
-        <Route path="/car/:id" element={<CarDetail />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/brand/:brand" element={<BrandPage />} />
-
-
-        {/*  body types */}
-        <Route path="/category/:type" element={<BodyTypePage />} />
-
+        {/* Protected User Routes (Blocked for Admins) */}
+        <Route element={<ProtectUserRoute />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<AboutUs />} />
+          <Route path="/contact" element={<ContactUs />} />
+          <Route path="/car/:id" element={<CarDetail />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/brand/:brand" element={<BrandPage />} />
+          <Route path="/category/:type" element={<BodyTypePage />} />
+          <Route
+            path="/brands"
+            element={
+              <MobileOnly>
+                <Brand />
+              </MobileOnly>
+            } />
+          <Route
+            path="/categories"
+            element={
+              <MobileOnly>
+                <Categories />
+              </MobileOnly>
+            } />
+        </Route>
 
         {/* Auth pages */}
         <Route path="/signup" element={<Signup />} />
@@ -80,27 +95,12 @@ const AppContent = () => {
         {/* Admin pages */}
         <Route path="/admin" element={<Dashboard />} />
         <Route path="/admin/managecar" element={<ManageCar />} />
+        <Route path="/admin/managebrand" element={<AddBrand />} />
         <Route path="/admin/manageuser" element={<ManageUser />} />
         <Route path="/admin/addcar" element={<AddCar />} />
         <Route path="/admin/paymentdetail" element={<PaymentDetail />} />
         <Route path="/admin/managequery" element={<ManageQuery />} />
-
-        {/* mobile only*/}
-        <Route
-          path="/brands"
-          element={
-            <MobileOnly>
-              <Brand />
-            </MobileOnly>
-          } />
-
-        <Route
-          path="/categories"
-          element={
-            <MobileOnly>
-              <Categories />
-            </MobileOnly>
-          } />
+        <Route path="/admin/managemessage" element={<ManageMessage />} />
       </Routes>
 
       {!hideLayout && <Footer />}

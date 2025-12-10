@@ -129,6 +129,7 @@ const ManageCar = () => {
                                 <th className="border border-gray-300 p-3">Company</th>
                                 <th className="border border-gray-300 p-3">Year</th>
                                 <th className="border border-gray-300 p-3">Registration</th>
+                                <th className="border border-gray-300 p-3">Status</th>
                                 <th className="border border-gray-300 p-3">Actions</th>
                             </tr>
                         </thead>
@@ -140,6 +141,7 @@ const ManageCar = () => {
                                     <td className="border border-gray-300 p-3">{car.brand}</td>
                                     <td className="border border-gray-300 p-3">{car.year}</td>
                                     <td className="border border-gray-300 p-3">{car.registrationState}</td>
+                                    <td className="border border-gray-300 p-3">{car.status}</td>
                                     <td className="border border-gray-300 p-3">
                                         <div className="flex gap-3 justify-center">
                                             <Pencil

@@ -1,14 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import Sidebar from "../Sidebar";
 import { useNavigate } from "react-router-dom";
-
-const BRANDS = [
-    "Audi", "BMW", "Mercedes-Benz", "Porsche", "Ferrari",
-    "Lamborghini", "Land Rover", "Bentley", "Rolls-Royce", "Volvo"
-];
 
 const STATES = [
     "AP", "AR", "AS", "BR", "CG", "GA", "GJ", "HR", "HP", "JH", "KA", "KL",
@@ -26,6 +21,25 @@ const AddCar = () => {
     const navigate = useNavigate();
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
     const [images, setImages] = useState([]);
+    const [brands, setBrands] = useState([]);
+
+    useEffect(() => {
+        const fetchBrands = async () => {
+            try {
+                const res = await axios.get("http://localhost:8080/api/admin/getbrand");
+                if (res.data) {
+                    // Assuming res.data is an array of objects { _id, name, ... }
+                    // We extract just the names to match the previous structure, 
+                    // or map directly in the render
+                    setBrands(res.data);
+                }
+            } catch (error) {
+                console.error("Error fetching brands", error);
+                toast.error("Failed to load brands");
+            }
+        };
+        fetchBrands();
+    }, []);
 
     const handleImageUpload = (e) => {
         const files = Array.from(e.target.files);
@@ -38,8 +52,9 @@ const AddCar = () => {
             Object.keys(data).forEach((key) => formData.append(key, data[key]));
             images.forEach((file) => formData.append("image", file));
 
-            const res = await axios.post("http://localhost:8080/api/admin/cars/addcar", formData, {
-                headers: { "Content-Type": "multipart/form-data" }
+            await axios.post("http://localhost:8080/api/admin/cars/addcar", formData, {
+                headers: { "Content-Type": "multipart/form-data" },
+                withCredentials: true,
             });
 
             toast.success("Car Added Successfully!");
@@ -84,7 +99,7 @@ const AddCar = () => {
                             <label className="font-semibold text-gray-700 mb-1">Brand *</label>
                             <select {...register("brand", { required: true })} className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition bg-white">
                                 <option value="">Select Brand</option>
-                                {BRANDS.map((brand) => (<option key={brand} value={brand}>{brand}</option>))}
+                                {brands.map((brand) => (<option key={brand._id || brand.name} value={brand.name}>{brand.name}</option>))}
                             </select>
                             {errors.brand && <p className="text-red-500 text-sm mt-1">Brand is required</p>}
                         </div>

@@ -67,7 +67,9 @@ router.post("/login", async (req, res) => {
       maxAge: 24 * 60 * 60 * 1000,
     });
 
-    res.status(200).json({ message: "Login successful", role: user.role });
+    res
+      .status(200)
+      .json({ message: "Login successful", role: user.role, token });
   } catch (error) {
     console.error("Login Error:", error);
     res.status(500).json({ message: "Server error" });

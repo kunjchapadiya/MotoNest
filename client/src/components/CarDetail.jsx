@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import EMICalculator from './EMI';
 import BrandPortfolio from './BrandPortfolio';
@@ -10,7 +10,7 @@ import PaymentSuccess from './PaymentSuccess';
 
 const CarDetail = () => {
     const { id } = useParams();
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
     const [car, setCar] = useState(null);
     const [open, setOpen] = useState(false);
     const [paymentSuccess, setPaymentSuccess] = useState(false);
@@ -51,7 +51,7 @@ const CarDetail = () => {
                 handler: async function (response) {
                     try {
                         // 3. Verify Payment
-                        const verifyRes = await axios.post(
+                        await axios.post(
                             "http://localhost:8080/api/payment/verify-payment",
                             {
                                 razorpay_order_id: response.razorpay_order_id,
@@ -96,7 +96,7 @@ const CarDetail = () => {
     if (!car) return <div className="flex justify-center items-center h-screen">Loading...</div>;
 
     const carImages = car.image && car.image.length > 0
-        ? car.image.map(path => `http://localhost:8080/${path}`)
+        ? car.image.map(path => `http://localhost:8080/${path.replace(/\\/g, "/")}`)
         : ["/images/cta/cta1.png"];
 
     return (
@@ -130,21 +130,23 @@ const CarDetail = () => {
                 </div>
                 <div className="btns flex justify-center items-center w-[30vw] h-full gap-2">
                     <button
-                        className="bg-black text-white px-6 py-3 rounded-full font-semibold hover:bg-zinc-800 transition"
+                        className={`px-6 py-3 rounded-full font-semibold transition ${car.status === "sold" ? "bg-red-600 text-white cursor-not-allowed" : "bg-black text-white hover:bg-zinc-800"}`}
                         onClick={handleBookNow}
+                        disabled={car.status === "sold"}
                     >
-                        Book Now
+                        {car.status === "sold" ? "Sold Out" : "Book Now"}
                     </button>
 
                     <button
-                        className="bg-white text-black border-2 border-black px-6 py-3 rounded-full font-semibold hover:bg-gray-100 transition"
+                        className={`border-2 border-black px-6 py-3 rounded-full font-semibold transition ${car.status === "sold" ? "bg-gray-100 text-gray-400 cursor-not-allowed border-gray-300" : "bg-white text-black hover:bg-gray-100"}`}
                         onClick={() => setOpen(true)}
+                        disabled={car.status === "sold"}
                     >
                         Reserve a car
                     </button>
 
                     {open && <ReservationForm setOpen={setOpen} />}
-                    {paymentSuccess && <PaymentSuccess />}
+                    {paymentSuccess && <PaymentSuccess onClose={() => setPaymentSuccess(false)} />}
                 </div>
             </div>
 
@@ -199,6 +201,15 @@ const CarDetail = () => {
                         alt="Car Image"
                         className="w-full h-full object-contain"
                     />
+                    {car.status === "sold" && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-65 z-10 transition-all duration-300">
+                            <div className="border-4 border-white px-8 py-4 transform -rotate-12 bg-white/10 backdrop-blur-sm shadow-2xl">
+                                <span className="text-white text-4xl md:text-6xl font-black tracking-wider uppercase drop-shadow-md">
+                                    SOLD OUT
+                                </span>
+                            </div>
+                        </div>
+                    )}
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black opacity-50 md:opacity-100 md:from-transparent md:via-transparent md:to-black"></div>
                 </div>
                 <div className="right w-full md:w-1/2 p-8 md:p-16 flex items-center justify-center bg-black">

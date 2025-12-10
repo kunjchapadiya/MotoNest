@@ -6,6 +6,10 @@ import { Link } from "react-router-dom";
 const Sidebar = () => {
     const [open, setOpen] = useState(false);
 
+    const logout = () => {
+        localStorage.removeItem("token");
+        window.location.href = "/login";
+    }
     return (
         <>
             {/* Mobile Toggle Button */}
@@ -24,9 +28,9 @@ const Sidebar = () => {
         md:translate-x-0`}
             >
                 {/* Logo */}
-                <h1 className="text-2xl font-bold mb-10 text-gray-800">Admin Panel</h1>
+                <h1 className="text-2xl font-bold text-gray-800">Admin Panel</h1>
 
-                <nav className="flex flex-col gap-3">
+                <nav className="flex flex-col gap-1 ">
 
                     <Link
                         to="/admin"
@@ -42,6 +46,14 @@ const Sidebar = () => {
                     >
                         <Car size={20} />
                         Manage Cars
+                    </Link>
+
+                    <Link
+                        to="/admin/managebrand"
+                        className="flex items-center gap-3 p-3 rounded-lg hover:bg-blue-100 hover:text-blue-700 text-gray-700 transition"
+                    >
+                        <Car size={20} />
+                        Manage Brand
                     </Link>
 
                     <Link
@@ -68,7 +80,15 @@ const Sidebar = () => {
                         Manage Query
                     </Link>
 
-                    <button
+                    <Link
+                        to="/admin/managemessage"
+                        className="flex items-center gap-3 p-3 rounded-lg hover:bg-blue-100 hover:text-blue-700 text-gray-700 transition"
+                    >
+                        <MessageCircle size={20} />
+                        Received Message
+                    </Link>
+
+                    <button onClick={logout}
                         className="flex items-center gap-3 p-3 rounded-lg bg-red-500 hover:bg-red-600 text-white mt-10 transition"
                     >
                         <LogOut size={20} />

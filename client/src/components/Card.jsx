@@ -6,7 +6,7 @@ const Card = ({ car }) => {
     const navigate = useNavigate();
 
     const handleWhatsAppEnquiry = (car) => {
-        const phoneNumber = /* your mobile no here */ 
+        const phoneNumber = "916352023799";
         const message = `Hello, I want to enquire about ${car.brand} ${car.model} priced at ₹${car.price}.`;
         const text = encodeURIComponent(message);
         const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
@@ -56,8 +56,16 @@ const Card = ({ car }) => {
                 <img
                     src={car.image && car.image.length > 0 ? `http://localhost:8080/${car.image[0].replace(/\\/g, "/")}` : "/images/cta/cta1.png"}
                     alt={car.model}
-                    className="w-full h-64 object-contain   "
+                    className="w-full h-64 object-contain"
                 />
+
+                {car.status === "sold" && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                        <span className="text-white text-3xl font-bold border-4 border-white px-4 py-2 transform -rotate-12">
+                            SOLD OUT
+                        </span>
+                    </div>
+                )}
 
                 {/* <button className="absolute top-4 right-4 bg-white/80 backdrop-blur-sm p-2 rounded-full hover:bg-white">
                     <Bookmark size={20} className="text-gray-900" />

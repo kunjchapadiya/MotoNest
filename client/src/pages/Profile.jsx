@@ -274,7 +274,7 @@ const ProfilePage = () => {
             ${activeSection === "favorites" ? "bg-blue-600 text-white" : "hover:bg-gray-200"}
           `}
                 >
-                    Favorites
+                    My Orders
                 </button>
 
                 <button

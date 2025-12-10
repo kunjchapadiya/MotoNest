@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Card from "../components/Card";
-import { motion } from "framer-motion";
 import { useParams } from "react-router-dom";
 
 // Mapping brand → logo & description
@@ -64,12 +63,24 @@ const BrandPage = () => {
     const [sortedCars, setSortedCars] = useState([]);
     const [sortType, setSortType] = useState("");
 
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 3;
+
+    // Pagination Calculation
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = sortedCars.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(sortedCars.length / itemsPerPage);
+
+    const handlePageChange = (pageNumber) => setCurrentPage(pageNumber);
+
     useEffect(() => {
         const fetchBrandCars = async () => {
             try {
                 const res = await axios.get(`http://localhost:8080/api/brand/${brand}`);
                 setCars(res.data);
                 setSortedCars(res.data);
+                setCurrentPage(1); // Reset to first page on new fetch
             } catch (error) {
                 console.log("Error fetching cars:", error);
             }
@@ -109,17 +120,15 @@ const BrandPage = () => {
         }
 
         setSortedCars(sorted);
+        setCurrentPage(1); // Reset to first page on sort
     };
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
 
             {/* Header Section */}
-            <motion.div
+            <div
                 className="flex flex-col items-center py-16"
-                initial={{ opacity: 0, y: -30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
             >
                 <img src={info.logo} alt={info.name} className="w-36 h-auto mb-6 drop-shadow-lg" />
 
@@ -132,7 +141,7 @@ const BrandPage = () => {
                 </p>
 
                 <div className="mt-6 w-24 h-1 bg-gray-900 rounded-full"></div>
-            </motion.div>
+            </div>
 
             {/* Sort Dropdown */}
             <div className="flex justify-center mb-10 align-center h-10">
@@ -151,19 +160,46 @@ const BrandPage = () => {
             </div>
 
             {/* Car Listing */}
-            <motion.div
-                className="px-6 md:px-16 lg:px-20 pb-20 flex flex-wrap justify-center gap-10"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
+            <div
+                className="px-6 md:px-16 lg:px-20 flex flex-wrap justify-center gap-10"
             >
-                {sortedCars.length > 0 ? (
-                    sortedCars.map((car) => (
+                {currentItems.length > 0 ? (
+                    currentItems.map((car) => (
                         <Card key={car._id} car={car} />
                     ))
                 ) : (
                     <p className="text-center text-xl text-gray-600">No cars available.</p>
                 )}
-            </motion.div>
+            </div>
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+                <div className="flex justify-center mt-12 pb-16 space-x-2">
+                    <button
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 1}
+                        className={`px-4 py-2 rounded-lg transition ${currentPage === 1 ? "bg-gray-300 cursor-not-allowed text-gray-500" : "bg-black text-white hover:bg-gray-800"}`}
+                    >
+                        Prev
+                    </button>
+                    {[...Array(totalPages)].map((_, index) => (
+                        <button
+                            key={index}
+                            onClick={() => handlePageChange(index + 1)}
+                            className={`px-4 py-2 rounded-lg transition ${currentPage === index + 1 ? "bg-black text-white" : "bg-gray-200 hover:bg-gray-300 text-gray-800"}`}
+                        >
+                            {index + 1}
+                        </button>
+                    ))}
+                    <button
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                        className={`px-4 py-2 rounded-lg transition ${currentPage === totalPages ? "bg-gray-300 cursor-not-allowed text-gray-500" : "bg-black text-white hover:bg-gray-800"}`}
+                    >
+                        Next
+                    </button>
+                </div>
+            )}
         </div>
     );
 };

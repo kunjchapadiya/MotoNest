@@ -61,7 +61,7 @@ const Signup = () => {
                             <div className="relative mt-1">
                                 <input
                                     type="text"
-                                    className="w-full border border-gray-300 bg-gray-50 text-gray-900 rounded-xl px-4 py-3 pl-10 outline-none focus:ring-2 focus:ring-blue-500"
+                                    className="w-full border border-gray-300 bg-gray-50 text-gray-900 rounded-xl px-8 py-3 pl-10 outline-none focus:ring-2 focus:ring-blue-500"
                                     placeholder="John Doe"
                                     {...register("name", { required: "Name is required" })}
                                 />
@@ -80,7 +80,7 @@ const Signup = () => {
                             <div className="relative mt-1">
                                 <input
                                     type="email"
-                                    className="w-full border border-gray-300 bg-gray-50 text-gray-900 rounded-xl px-4 py-3 pl-10 outline-none focus:ring-2 focus:ring-blue-500"
+                                    className="w-full border border-gray-300 bg-gray-50 text-gray-900 rounded-xl px-8 py-3 pl-10 outline-none focus:ring-2 focus:ring-blue-500"
                                     placeholder="yourname@example.com"
                                     {...register("email", {
                                         required: "Email is required",
@@ -103,7 +103,7 @@ const Signup = () => {
                             <div className="relative mt-1">
                                 <input
                                     type={showPassword ? "text" : "password"}
-                                    className="w-full border border-gray-300 bg-gray-50 text-gray-900 rounded-xl px-4 py-3 pl-10 outline-none focus:ring-2 focus:ring-blue-500"
+                                    className="w-full border border-gray-300 bg-gray-50 text-gray-900 rounded-xl px-8 py-3 pl-10 outline-none focus:ring-2 focus:ring-blue-500"
                                     placeholder="••••••••"
                                     {...register("password", {
                                         required: "Password is required",
