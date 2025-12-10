@@ -1,5 +1,5 @@
 
-# MotoNest - Car Reselling Web Application
+# MotoNest - Car Resellig Web Application
 
 MotoNest is a full-stack MERN application designed for luxury car reselling. It features a responsive UI, advanced filtering, admin dashboard, enquiry management, and secure backend APIs.
 
@@ -68,6 +68,27 @@ Install my-project with npm
   cd my-project
 ```
     
+## Environment Variables
+
+To run this project, you will need to add the following environment variables to your .env file
+
+`PORT=8080`
+
+
+// JWT SECRET KEY
+
+`JWT_SECRET= YOUR_SECRET_KEY`
+
+// MongoDB
+
+`MONGO_URI=MONGODB_URL`
+
+// RAZORPAY INTEGRATION
+
+`rzp_test_key_id=RAZORPAY_TEST_KEY`
+`rzp_test_secret_key=RAZORPAY_TEST_SECRET_KEY`
+
+
 ## Run Locally
 
 Clone the project
